@@ -1,39 +1,35 @@
 """
-:mod: 'BookRun'
+:mod: 'BookRunFlat'
 ~~~~~~~~~~~~~~~
 
-..  py:module:: BookRun
+..  py:module:: BookRunFlat
     :copyright: Copyright BitWorks LLC, All rights reserved.
     :license: MIT
     :synopsis: Entry point to run XBRLStudio with the python 3 interpreter
     :description: To run the program, type the following at a command prompt:
 
-    $ python BookRun.py
-
-XBRLStudio1 direct dependencies:
-    Python 3.6.1
-    Arelle 1.0
-        lxml 3.8.0
-        isodate 0.5.4
-    PyQt5 5.9
-        PyQtChart
-    Qt5 5.9
-    sqlalchemy 1.1.11
+    $ python BookRunFlat.py
 """
 
 try:
     import sys, os, datetime, logging
     logger = logging.getLogger()
-    from PyQt5 import QtWidgets
+    from PySide2 import QtWidgets
     import BookView, BookValidator
 except Exception as err:
     logger.error("{0}:BookRun import error:".format(str(datetime.datetime.now()) + str(err)))
 
 #module-level directories
-Global_app_dir = os.path.getcwd() #base dir for program files
+Global_app_dir = os.path.dirname(os.path.abspath( __file__ ))
+Global_app_par_dir = os.path.abspath(os.path.join(Global_app_dir, os.pardir))
 Global_tmp_dir = os.path.join(Global_app_dir, "tmp") #temporary files (e.g., *_fct.xml, *.pdf)
 Global_log_dir = os.path.join(Global_app_dir, "log") #log files
 Global_key_dir = os.path.join(Global_app_dir, "key") #keyfile folder (sale ID file and key file)
+Global_res_dir = os.path.join(Global_app_par_dir, "xbrlstudio-res")
+Global_img_dir = os.path.join(Global_res_dir, "img")
+Global_doc_dir = os.path.join(Global_res_dir, "doc")
+Global_python_dir = os.path.join(Global_app_par_dir, "xbrlstudio-env", "bin", "python")
+Global_arelle_dir = os.path.join(Global_res_dir, "Arelle")
 
 def ensureDirs(target_dirs):
     try:
@@ -77,11 +73,22 @@ def environmentSetup():
     global Global_tmp_dir
     global Global_log_dir
     global Global_key_dir
+    global Global_res_dir
+    global Global_img_dir
+    global Global_doc_dir
+    global Global_python_dir
+    global Global_arelle_dir
+
     try:
         target_dirs = [Global_app_dir,
                        Global_tmp_dir,
                        Global_log_dir,
-                       Global_key_dir]
+                       Global_key_dir,
+                       Global_res_dir,
+                       Global_img_dir,
+                       Global_doc_dir,
+                       Global_python_dir,
+                       Global_arelle_dir]
         directories = ensureDirs(target_dirs)
         registration = startupRegistrationCheck()
     except Exception as err:
@@ -94,6 +101,12 @@ def main():
     global Global_tmp_dir
     global Global_log_dir
     global Global_key_dir
+    global Global_res_dir
+    global Global_img_dir
+    global Global_doc_dir
+    global Global_python_dir
+    global Global_arelle_dir
+
     try:
         directories, registration = environmentSetup()
         if directories is True:
@@ -107,12 +120,17 @@ def main():
             logger.addHandler(logger_fh)
             logger.info("{0}:Initializing MainApplication".format(str(datetime.datetime.now())))
             app = QtWidgets.QApplication(sys.argv)
-            bmw = BookView.BookMainWindow([Global_app_dir,
-                                           Global_tmp_dir,
-                                           Global_log_dir,
-                                           Global_key_dir], registration)
+            bmw = BookView.BookMainWindow({"Global_app_dir":Global_app_dir,
+                                           "Global_tmp_dir":Global_tmp_dir,
+                                           "Global_log_dir":Global_log_dir,
+                                           "Global_key_dir":Global_key_dir,
+                                           "Global_res_dir":Global_res_dir,
+                                           "Global_img_dir":Global_img_dir,
+                                           "Global_doc_dir":Global_doc_dir,
+                                           "Global_python_dir":Global_python_dir,
+                                           "Global_arelle_dir":Global_arelle_dir}, registration)
             bmw.show()
-            return_val = sys.exit(app.exec())
+            return_val = sys.exit(app.exec_())
             logger.info("{0}:Exit_status={1}".format(str(datetime.datetime.now()), return_val))
 
             return return_val

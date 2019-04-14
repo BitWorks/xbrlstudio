@@ -20,11 +20,11 @@
 try:
     import copy, sys, os, datetime, logging
     model_logger = logging.getLogger()
-    from PyQt5 import (QtCore, QtWidgets, QtGui)
+    from PySide2 import (QtCore, QtWidgets, QtGui)
     # Tiered
-    from . import BookFilingUtility
+    # from . import BookFilingUtility
     # Flat
-    # import BookFilingUtility
+    import BookFilingUtility
 except Exception as err:
     model_logger.error("{0}:BookModel import error:{1}".format(str(datetime.datetime.now()), str(err)))
 

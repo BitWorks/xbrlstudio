@@ -15,9 +15,9 @@ try:
     import importlib, os, sys, datetime, logging
     filing_manager_logger = logging.getLogger()
     # Tiered
-    from . import (BookFilingUtility, BookView)
+    # from . import (BookFilingUtility, BookView)
     # Flat
-    # import BookFilingUtility, BookView
+    import BookFilingUtility, BookView
 except Exception as err:
     filing_manager_logger.error("{0}:BookFilingManager import error:{1}".format(str(datetime.datetime.now()), str(err)))
 
@@ -57,13 +57,13 @@ class BookFilingManager():
             global db_util
             try:
                 # Tiered
-                if "XBRLStudio1.src.BookDatabaseUtility" not in sys.modules:
+                # if "XBRLStudio1.src.BookDatabaseUtility" not in sys.modules:
                 # Flat
-                # if "BookDatabaseUtility" not in sys.modules:
+                if "BookDatabaseUtility" not in sys.modules:
                     # Tiered
-                    from . import BookDatabaseUtility as db_util
+                    # from . import BookDatabaseUtility as db_util
                     # Flat
-                    # import BookDatabaseUtility as db_util
+                    import BookDatabaseUtility as db_util
                 db_util.buildEngine(BookView.Global_db_uri)
                 if not db_util.tableExists("entities"):
                     db_util.makeEntityTable()

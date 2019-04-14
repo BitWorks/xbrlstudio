@@ -5,7 +5,7 @@
 ..  py:module:: BookView
     :copyright: Copyright BitWorks LLC, All rights reserved.
     :license: MIT
-    :synopsis: Collection of PyQt views used by XBRLStudio
+    :synopsis: Collection of views used by XBRLStudio
     :description: Contains the following classes:
 
         BookMainWindow - main GUI window for application
@@ -14,22 +14,23 @@
         BookStatusBar - status bar indicator for sending brief messages to the interface
         BookTableView - table view for viewing numerical and textual tables
         BookNumericalGraphic - chart graphic for viewing numerical table facts
-        BookNumericalChart - QChart type with refresh functionality
+        BookNumericalChart - QtCharts.QChart type with refresh functionality
         BookTextualGraphic - html graphic for viewing textual table facts
 """
 try:
     import webbrowser, sys, os, datetime, logging
     import subprocess
     view_logger = logging.getLogger()
-    from PyQt5 import (QtWidgets, QtCore)
-    from PyQt5.QtChart import (QBarSeries, QBarSet, QChart, QChartView, QLineSeries, QScatterSeries)
-    from PyQt5.QtCore import (QPoint, QPointF)
-    from PyQt5.QtGui import (QPainter, QColor, QPixmap, QImage)
-    from PyQt5.QtWidgets import (QApplication, QMainWindow)
+    from PySide2 import (QtWidgets, QtCore)
+    from PySide2.QtCharts import QtCharts
+    # (QtCharts.QBarSeries, QtCharts.QBarSet, QtCharts.QChart, QtCharts.QChartView, QtCharts.QLineSeries, QtCharts.QScatterSeries)
+    from PySide2.QtCore import (QPoint, QPointF)
+    from PySide2.QtGui import (QPainter, QColor, QPixmap, QImage)
+    from PySide2.QtWidgets import (QApplication, QMainWindow)
     # Tiered
-    from . import (BookModel, BookCntlr, BookFilingManager, BookFilingUtility, BookValidator, BookExportUtility)
+    # from . import (BookModel, BookCntlr, BookFilingManager, BookFilingUtility, BookValidator, BookExportUtility)
     # Flat
-    # import BookModel, BookCntlr, BookFilingManager, BookFilingUtility, BookValidator, BookExportUtility
+    import BookModel, BookCntlr, BookFilingManager, BookFilingUtility, BookValidator, BookExportUtility
 except Exception as err:
     view_logger.error("{0}:BookView import error:{1}".format(str(datetime.datetime.now()), str(err)))
 
@@ -163,7 +164,8 @@ class BookMainWindow(QtWidgets.QMainWindow):
     newTab_textualGraphic - (BookTextualGraphic type); textual graphic containing embedded browser
     """
 
-    cntlr_processXbrl_start_signal = QtCore.pyqtSignal("QString", "bool", "bool", "PyQt_PyObject", "QString")
+    # cntlr_processXbrl_start_signal = QtCore.pyqtSignal("QString", "bool", "bool", "PyQt_PyObject", "QString")
+    cntlr_processXbrl_start_signal = QtCore.Signal("QString", "bool", "bool", "QObject", "QString")
 
     def __init__(self, directories, registration):
         view_logger.info("{0}:Initializing BookMainWindow".format(str(datetime.datetime.now())))
@@ -180,6 +182,7 @@ class BookMainWindow(QtWidgets.QMainWindow):
                         "Global_python_dir":Global_python_dir,
                         "Global_arelle_dir":Global_arelle_dir}
         """
+        # print(self.directories)
         self.registration = registration #boolean; True = registered; False = unregistered
         self.setupUi()
         self.setObjectName("BookMainWindow")
@@ -804,8 +807,6 @@ class BookMainWindow(QtWidgets.QMainWindow):
             f_list = QtWidgets.QFileDialog.getOpenFileNames(caption = "Select XBRL File(s)",
                                           directory = "C:\\",
                                           filter = "Instances (*.xml)")[0]
-            for f in f_list:
-                f = f.replace("/", "\\")
             self.cntlr_processXbrl_start_signal.emit("File", False, True, f_list, root_dir)
         except Exception as err:
             view_logger.error("{0}:BookMainWindow.fileImport():{1}".format(str(datetime.datetime.now()), str(err)))
@@ -826,7 +827,6 @@ class BookMainWindow(QtWidgets.QMainWindow):
                 return
             f_list = None
             root_dir = QtWidgets.QFileDialog.getExistingDirectory(caption = "Select XBRL Folder", directory = "C:\\")
-            root_dir = root_dir.replace("/", "\\")
             self.cntlr_processXbrl_start_signal.emit("Folder", False, True, f_list, root_dir)
         except Exception as err:
             view_logger.error("{0}:BookMainWindow.folderImport():{1}".format(str(datetime.datetime.now()), str(err)))
@@ -881,7 +881,7 @@ class BookMainWindow(QtWidgets.QMainWindow):
 
     def customMenuNumericalGraphic(self, position):
         try:
-            current_num_graphic = self.mainTabWidget.currentWidget().findChild(QChartView, "numericalGraphic")
+            current_num_graphic = self.mainTabWidget.currentWidget().findChild(QtCharts.QChartView, "numericalGraphic")
             if current_num_graphic.chart().items_viewed == True:
                 clipboard = QApplication.clipboard()
                 numerical_graphic_context_menu = QtWidgets.QMenu(self)
@@ -997,9 +997,10 @@ class BookMainWindow(QtWidgets.QMainWindow):
     def aboutXbrlStudio(self):
         try:
             # Tiered
-            current_logo_path = os.path.join(self.directories.get("Global_img_dir"), "XBRLStudio_1_1_0_Logo.png")
+            # current_logo_path = os.path.join(self.directories.get("Global_img_dir"), "XBRLStudio_1_1_0_Logo.png")
             # Flat
             # current_logo_path = os.path.join(os.getcwd(), "res", "img", "XBRLStudio1Logo.png")
+            current_logo_path = os.path.join(self.directories.get("Global_img_dir"), "XBRLStudio_1_1_0_Logo.png")
             title = "XBRLStudio"
             body = "Copyright 2017 by BitWorks, LLC.\n\n\nCommercial License\n\n\n"
             notifier = QtWidgets.QMessageBox(self)
@@ -1381,7 +1382,7 @@ class BookPrefWindow(QtWidgets.QDialog):
             while current_index < self.book_main_window.mainTabWidget.count() - 1:
                 current_tab = self.book_main_window.mainTabWidget.widget(current_index)
                 current_num_table = current_tab.findChild(QtWidgets.QTableView, "numericalTableView")
-                current_num_graphic = current_tab.findChild(QChartView, "numericalGraphic")
+                current_num_graphic = current_tab.findChild(QtCharts.QChartView, "numericalGraphic")
                 current_tex_table = current_tab.findChild(QtWidgets.QTableView, "textualTableView")
                 current_tex_graphic = current_tab.findChild(QtWidgets.QTextEdit, "textualGraphic")
 
@@ -1753,11 +1754,11 @@ class BookTableView(QtWidgets.QTableView):
 
         return
 
-class BookNumericalGraphic(QChartView):
+class BookNumericalGraphic(QtCharts.QChartView):
     """
     BookNumericalGraphic
     ~~~~~~~~~~~~~~~~~~~~
-    Customized sub-class of QChartView; implements a refreshGraphic function
+    Customized sub-class of QtCharts.QChartView; implements a refreshGraphic function
 
     Functions
     ~~~~~~~~~
@@ -1770,7 +1771,7 @@ class BookNumericalGraphic(QChartView):
 
     def __init__(self, book_table_view):
         view_logger.info("{0}:Initializing BookNumericalGraphic".format(str(datetime.datetime.now())))
-        QChartView.__init__(self, book_table_view)
+        QtCharts.QChartView.__init__(self, book_table_view)
         self.book_table_view = book_table_view
         self.setRenderHint(QPainter.Antialiasing)
         self.setObjectName("numericalGraphic")
@@ -1784,15 +1785,15 @@ class BookNumericalGraphic(QChartView):
 
         return
 
-class BookNumericalChart(QChart):
+class BookNumericalChart(QtCharts.QChart):
     """
     BookNumericalChart
     ~~~~~~~~~~~~~~~~~~
-    Customized sub-class of QChart; implements a refreshGraphic function
+    Customized sub-class of QtCharts.QChart; implements a refreshGraphic function
 
     Functions
     ~~~~~~~~~
-    refreshGraphic(self) - refreshes the QChart according to user-defined settings and facts selected for viewing
+    refreshGraphic(self) - refreshes the QtCharts.QChart according to user-defined settings and facts selected for viewing
 
     Attributes
     ~~~~~~~~~~
@@ -1803,7 +1804,7 @@ class BookNumericalChart(QChart):
 
     def __init__(self, book_table_view):
         view_logger.info("{0}:Initializing BookNumericalChart".format(str(datetime.datetime.now())))
-        QChart.__init__(self)
+        QtCharts.QChart.__init__(self)
         self.book_table_view = book_table_view
         self.chart_type = self.book_table_view.book_main_window.pref.general_num_graph_type
         self.items_viewed = False
@@ -1813,13 +1814,13 @@ class BookNumericalChart(QChart):
             self.chart_type = self.book_table_view.book_main_window.pref.general_num_graph_type
 
             if self.chart_type == "Bar":
-                self.setTheme(QChart.ChartThemeHighContrast)
+                self.setTheme(QtCharts.QChart.ChartThemeHighContrast)
                 self.removeAllSeries()
                 self.setBackgroundVisible(True)
-                data_series = QBarSeries(self)
-                zero_series = QLineSeries(self)
+                data_series = QtCharts.QBarSeries(self)
+                zero_series = QtCharts.QLineSeries(self)
                 zero_series.insert(0, QPointF(QPoint(0, 0)))
-                bar_set = QBarSet("")
+                bar_set = QtCharts.QBarSet("")
                 active_rows = []
                 self.items_viewed = False
                 for index, item in enumerate(self.book_table_view.model().items):
@@ -1853,22 +1854,22 @@ class BookNumericalChart(QChart):
                     self.axisY(data_series).applyNiceNumbers()
                     self.axisX(zero_series).setRange(0, len(active_rows))
                     self.setDropShadowEnabled(False)
-                    self.setAnimationOptions(QChart.NoAnimation)
+                    self.setAnimationOptions(QtCharts.QChart.NoAnimation)
                     self.legend().setVisible(False)
                 else:
                     self.setDropShadowEnabled(False)
-                    self.setAnimationOptions(QChart.NoAnimation)
+                    self.setAnimationOptions(QtCharts.QChart.NoAnimation)
                     self.legend().setVisible(False)
 
             elif self.chart_type == "Line":
-                self.setTheme(QChart.ChartThemeHighContrast)
+                self.setTheme(QtCharts.QChart.ChartThemeHighContrast)
                 self.removeAllSeries()
                 self.setBackgroundVisible(True)
-                line_series = QLineSeries(self)
+                line_series = QtCharts.QLineSeries(self)
                 line_series_data = []
-                scatter_series = QScatterSeries(self)
+                scatter_series = QtCharts.QScatterSeries(self)
                 scatter_series_data = []
-                zero_series = QLineSeries(self)
+                zero_series = QtCharts.QLineSeries(self)
                 zero_series.insert(0, QPointF(QPoint(0, 0)))
                 self.items_viewed = False
                 for index, item in enumerate(self.book_table_view.model().items):
@@ -1914,20 +1915,20 @@ class BookNumericalChart(QChart):
                     self.axisX(line_series).setRange(1, len(line_series_data))
                     self.axisX(zero_series).setRange(1, len(line_series_data))
                     self.setDropShadowEnabled(False)
-                    self.setAnimationOptions(QChart.NoAnimation)
+                    self.setAnimationOptions(QtCharts.QChart.NoAnimation)
                     self.legend().setVisible(False)
                 else:
                     self.setDropShadowEnabled(False)
-                    self.setAnimationOptions(QChart.NoAnimation)
+                    self.setAnimationOptions(QtCharts.QChart.NoAnimation)
                     self.legend().setVisible(False)
 
             elif self.chart_type == "Scatter":
-                self.setTheme(QChart.ChartThemeHighContrast)
+                self.setTheme(QtCharts.QChart.ChartThemeHighContrast)
                 self.removeAllSeries()
                 self.setBackgroundVisible(True)
-                scatter_series = QScatterSeries(self)
+                scatter_series = QtCharts.QScatterSeries(self)
                 scatter_series_data = []
-                zero_series = QLineSeries(self)
+                zero_series = QtCharts.QLineSeries(self)
                 zero_series_data = []
                 zero_series.insert(0, QPointF(QPoint(0, 0)))
                 self.items_viewed = False
@@ -1968,11 +1969,11 @@ class BookNumericalChart(QChart):
                     self.axisX(scatter_series).setRange(1, len(scatter_series_data))
                     self.axisX(zero_series).setRange(1, len(scatter_series_data))
                     self.setDropShadowEnabled(False)
-                    self.setAnimationOptions(QChart.NoAnimation)
+                    self.setAnimationOptions(QtCharts.QChart.NoAnimation)
                     self.legend().setVisible(False)
                 else:
                     self.setDropShadowEnabled(False)
-                    self.setAnimationOptions(QChart.NoAnimation)
+                    self.setAnimationOptions(QtCharts.QChart.NoAnimation)
                     self.legend().setVisible(False)
         except Exception as err:
             view_logger.error("{0}:BookNumericalChart.refreshGraphic():{1}".format(str(datetime.datetime.now()), str(err)))

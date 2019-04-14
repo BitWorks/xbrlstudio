@@ -14,9 +14,8 @@
 try:
     import copy, csv, sys, os, datetime, logging
     export_utility_logger = logging.getLogger()
-    from PyQt5 import QtWidgets
-    from PyQt5.QtCore import (QFile, QIODevice)
-    from PyQt5.QtChart import QChartView
+    from PySide2 import QtWidgets
+    from PySide2.QtCore import (QFile, QIODevice)
 except Exception as err:
     export_utility_logger.error("{0}:BookExportUtility import error:{1}".format(str(datetime.datetime.now()), str(err)))
 

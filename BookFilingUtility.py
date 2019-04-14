@@ -26,6 +26,7 @@ try:
     import os, sys, datetime, logging
     filing_utility_logger = logging.getLogger()
     import xml.etree.ElementTree as etree
+    # from lxml import etree
     from html.parser import HTMLParser
     from html.entities import name2codepoint
 except Exception as err:

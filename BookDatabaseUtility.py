@@ -39,9 +39,9 @@ try:
     from sqlalchemy.schema import MetaData
     from sqlalchemy.pool import NullPool
     # Tiered
-    from . import (BookFilingUtility)
+    # from . import (BookFilingUtility)
     # Flat
-    # import BookFilingUtility
+    import BookFilingUtility
 except Exception as err:
     database_utility_logger.error("{0}:BookDatabaseUtility import error:{1}".format(str(datetime.datetime.now()), str(err)))
 

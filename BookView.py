@@ -856,7 +856,7 @@ class BookMainWindow(QtWidgets.QMainWindow):
                 entity_tree_view_context_menu.addSeparator()
                 remove_entity_action = entity_tree_view_context_menu.addAction("Remove Entity")
                 remove_entity_action.triggered.connect(lambda x: self.cntlr.removeEntity(selection.toolTip().split("=")[1]))
-                entity_tree_view_context_menu.exec(self.entity_tree_view.viewport().mapToGlobal(position))
+                entity_tree_view_context_menu.exec_(self.entity_tree_view.viewport().mapToGlobal(position))
         except Exception as err:
             view_logger.error("{0}:BookMainWindow.customMenuEntityTreeView():{1}".format(str(datetime.datetime.now()), str(err)))
 
@@ -873,7 +873,7 @@ class BookMainWindow(QtWidgets.QMainWindow):
                 filing_tree_view_context_menu.addSeparator()
                 remove_filing_action = filing_tree_view_context_menu.addAction("Remove Filing")
                 remove_filing_action.triggered.connect(lambda x: self.cntlr.removeFiling(selection))
-                filing_tree_view_context_menu.exec(self.filing_tree_view.viewport().mapToGlobal(position))
+                filing_tree_view_context_menu.exec_(self.filing_tree_view.viewport().mapToGlobal(position))
         except Exception as err:
             view_logger.error("{0}:BookMainWindow.customMenuFilingTreeView():{1}".format(str(datetime.datetime.now()), str(err)))
 
@@ -887,7 +887,7 @@ class BookMainWindow(QtWidgets.QMainWindow):
                 numerical_graphic_context_menu = QtWidgets.QMenu(self)
                 graphic_copy_action = numerical_graphic_context_menu.addAction("Copy Image")
                 graphic_copy_action.triggered.connect(lambda x: clipboard.setPixmap(current_num_graphic.grab()))
-                numerical_graphic_context_menu.exec(current_num_graphic.viewport().mapToGlobal(position))
+                numerical_graphic_context_menu.exec_(current_num_graphic.viewport().mapToGlobal(position))
         except Exception as err:
             view_logger.error("{0}:BookMainWindow.customMenuNumericalGraphic():{1}".format(str(datetime.datetime.now()), str(err)))
 
@@ -903,7 +903,7 @@ class BookMainWindow(QtWidgets.QMainWindow):
                 graphic_copy_html_action.triggered.connect(lambda x: clipboard.setText(current_tex_graphic.html))
                 graphic_copy_img_action = textual_graphic_context_menu.addAction("Copy Image")
                 graphic_copy_img_action.triggered.connect(lambda x: clipboard.setPixmap(current_tex_graphic.grab()))
-                textual_graphic_context_menu.exec(current_tex_graphic.mapToGlobal(position))
+                textual_graphic_context_menu.exec_(current_tex_graphic.mapToGlobal(position))
         except Exception as err:
             view_logger.error("{0}:BookMainWindow.customMenuTextualGraphic():{1}".format(str(datetime.datetime.now()), str(err)))
 
@@ -1002,7 +1002,7 @@ class BookMainWindow(QtWidgets.QMainWindow):
             # current_logo_path = os.path.join(os.getcwd(), "res", "img", "XBRLStudio1Logo.png")
             current_logo_path = os.path.join(self.directories.get("Global_img_dir"), "XBRLStudio_1_1_0_Logo.png")
             title = "XBRLStudio"
-            body = "Copyright 2017 by BitWorks, LLC.\n\n\nCommercial License\n\n\n"
+            body = "Copyright by BitWorks, LLC.\n\n\nMIT License\n\n\n"
             notifier = QtWidgets.QMessageBox(self)
             current_logo_image = QImage(current_logo_path)
             if current_logo_image is None:

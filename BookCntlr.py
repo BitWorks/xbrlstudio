@@ -134,7 +134,6 @@ class BookCntlr(QtCore.QObject):
                         for file in files:
                             if not file.startswith(".") and BookFilingUtility.isXbrlInstance(os.path.join(root, file)):
                                 f_list_instances.append(os.path.join(root, file))
-                    print(f_list_instances) #TODO
                     self.processInstances(f_list_instances, validate, importation)
                     if len(self.manual_import_items) > 0:
                         self.manual_import_signal.emit(self.manual_import_items)

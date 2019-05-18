@@ -508,7 +508,7 @@ class BookLineEdit(QtWidgets.QLineEdit):
             self.menu.addSeparator()
             self.action_fill_down = self.menu.addAction("Fill Down")
             self.action_fill_down.triggered.connect(lambda x: self.book_table_view.model().fillDown(self.index, self.text()))
-            self.menu.exec(event.globalPos())
+            self.menu.exec_(event.globalPos())
             del(self.menu)
         except Exception as err:
             model_logger.error("{0}:BookLineEdit.contextMenuEvent():{1}".format(str(datetime.datetime.now()), str(err)))
@@ -557,6 +557,7 @@ class BookTableViewDelegate(QtWidgets.QStyledItemDelegate):
                 return self.num_view_ch
             elif index.column() == 1: #Entity
                 self.num_entity_cb = QtWidgets.QComboBox(parent)
+                self.num_entity_cb.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
                 try:
                     # [cik, parent_cik, name]
                     self.num_entity_tree_info = self.book_table_view.book_main_window.cntlr.book_filing_manager.getEntityTreeInfo()
@@ -592,6 +593,7 @@ class BookTableViewDelegate(QtWidgets.QStyledItemDelegate):
                 return self.num_entity_cb
             elif index.column() == 2: #Filing
                 self.num_filing_cb = QtWidgets.QComboBox(parent)
+                self.num_filing_cb.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
                 try:
                     self.current_cik = self.book_table_view.model().items[index.row()][0]
                     self.num_filing_tree_info = self.book_table_view.book_main_window.cntlr.book_filing_manager.getFilingTreeInfo(self.current_cik)
@@ -621,6 +623,7 @@ class BookTableViewDelegate(QtWidgets.QStyledItemDelegate):
                 return self.num_filing_cb
             elif index.column() == 3: #Fact
                 self.num_fact_cb = QtWidgets.QComboBox(parent)
+                self.num_fact_cb.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
                 try:
                     self.current_cik = self.book_table_view.model().items[index.row()][0]
                     self.current_period = self.book_table_view.model().items[index.row()][1]
@@ -655,6 +658,7 @@ class BookTableViewDelegate(QtWidgets.QStyledItemDelegate):
                 return self.num_fact_cb
             elif index.column() == 4: #Context
                 self.num_con_cb = QtWidgets.QComboBox(parent)
+                self.num_con_cb.setSizeAdjustPolicy(QtWidgets.QComboBox.AdjustToMinimumContentsLengthWithIcon)
                 try:
                     self.current_cik = self.book_table_view.model().items[index.row()][0]
                     self.current_period = self.book_table_view.model().items[index.row()][1]

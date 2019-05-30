@@ -7,12 +7,17 @@ XBRLStudio utilizes Arelle to analyze publicly available XBRL filings to enable 
 
 Directory Structure
 
-|__xbrlstudio-master (local repo)
-|__xbrlstudio-env (virtualenv)
-      |__bin
-      |__include
-      |__lib
-|__xbrlstudio-res (resources)
-      |__Arelle (.git)
-      |__doc
-      |__img
+xbrlstudio-master (local repo)
+
+xbrlstudio-env (virtualenv)
+
+      bin   
+      include
+      lib
+      
+      
+xbrlstudio-res (resources)
+
+      Arelle (.git)
+      doc
+      img

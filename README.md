@@ -18,6 +18,6 @@ xbrlstudio-env (virtualenv)
       
 xbrlstudio-res (resources)
 
-      Arelle (.git)
+      Arelle (.git) (https://github.com/Arelle/Arelle)
       doc
       img
